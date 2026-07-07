@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تم الطلب</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+ body{ background:#f3f3f3; font-family:sans-serif; margin:0; } /* يخلي كل شي داخل الشاشة */ .container{ height:100vh; display:flex; flex-direction:column; justify-content:space-between; } /* ===== نجاح ===== */ .success{ text-align:center; padding:20px; } /* الهالة البرتقالية */ .glow{ width:130px; height:130px; margin:0 auto; border-radius:50%; background:rgba(255,140,0,0.2); display:flex; align-items:center; justify-content:center; animation:pulse 1.6s infinite; } /* الدائرة الخضراء ثابتة */ .check{ width:90px; height:90px; border-radius:50%; background:#e8f8ef; display:flex; align-items:center; justify-content:center; } .check i{ font-size:40px; color:#2ecc71; } /* النبض فقط للهالة */ @keyframes pulse{ 0%{transform:scale(1);opacity:1;} 50%{transform:scale(1.15);opacity:0.5;} 100%{transform:scale(1);opacity:1;} } .success h1{ margin:15px 0 5px; font-size:24px; } .success p{ color:#777; font-size:14px; } .order-card{ background:#111; color:#fff; margin:15px; padding:20px; border-radius:20px; } .order-id{ text-align:center; } .order-id small{ color:#aaa; } .order-id h2{ color:#ff7a00; font-size:38px; margin:5px 0; } .line{ height:1px; background:#333; margin:15px 0; } /* المعلومات */ .info{ display:flex; justify-content:space-between; align-items: center; } .info small{ color:#aaa; font-size:16px; margin-right: 30px; } .info p{ font-size:15px; margin: 0; margin-left: 30px; } /* التفاصيل */ .details{ background:#fff; margin:15px; padding:15px; border-radius:15px; flex:1; display:flex; flex-direction:column; justify-content:space-between; } .items{ flex:1; } /* صف الطلب */ .item{ display:flex; justify-content:space-between; margin-bottom:8px; font-size:14px; } .black-line{ height:1px; background:#000; margin:10px 0; } /* الإجمالي */ .total{ display:flex; justify-content:space-between; align-items:center; font-size:18px; } .total span:last-child{ color:#ff7a00; font-weight:bold; } /* الدفع */ .payment{ font-size:12px; color:#777; margin-top:5px; } /* الأزرار */ .actions{ display:flex; gap:10px; padding:15px; } .btn{ flex:1; padding:14px; border-radius:30px; font-size:14px; cursor:pointer; border:none; } .primary{ background:#ff7a00; color:#fff; } .secondary{ background:#fff; border:2px solid #000; } </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="header">
+
+<div class="left">
+<div class="icon-box">
+<a href="index.html">
+<i class="fa-solid fa-house"></i>
+</a>
+</div>
+</div>
+
+<div class="center">
+<img src="img/text-removebg-preview.png">
+</div>
+
+<div class="right">
+<div class="logo">
+<a href="index.html">
+<img src="/img/logo-sh-removebg-preview.png">
+</a>
+</div>
+</div>
+
+</header>
+
+<section class="success">
+
+<div class="glow">
+<div class="check">
+<i class="fa-solid fa-check"></i>
+</div>
+</div>
+
+<h1>🎉 تم استلام طلبك!</h1>
+<p>طلبك جاهز عند وصولك، توجه للكاشير مباشرة</p>
+
+</section>
+
+<div class="order-card">
+
+<div class="order-id">
+<small>رقم الطلب</small>
+<h2 id="order-id">#0000</h2>
+</div>
+
+<div class="line"></div>
+
+<div class="info">
+<small>الاستلام</small>
+<p id="time"></p>
+</div>
+
+</div>
+
+<div class="details">
+
+<div class="items" id="items"></div>
+
+<div>
+
+<div class="black-line"></div>
+
+<div class="total">
+<span>الإجمالي</span>
+<span id="total"></span>
+</div>
+
+<div class="payment">
+<i class="fa-solid fa-money-bill"></i>
+الدفع عند الاستلام
+</div>
+
+</div>
+
+</div>
+
+<div class="actions">
+<button class="btn primary" onclick="goHome()">الرئيسية</button>
+<button class="btn secondary" onclick="newOrder()">طلب آخر</button>
+</div>
+
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC29y-WhUcevyAzQU4qmkAtN9D1s_4I4xA",
+  authDomain: "shibak-9-a3ef3.firebaseapp.com",
+  projectId: "shibak-9-a3ef3",
+  appId: "1:617992558496:web:8a6ef748c11611d1ad36c5"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+
+const orderId = localStorage.getItem("lastOrderId");
+
+if(orderId){
+
+    db.collection("orders").doc(orderId).get().then(doc=>{
+
+        if(!doc.exists){
+            alert("لم يتم العثور على الطلب");
+            return;
+        }
+
+        const order = doc.data();
+
+        document.getElementById("order-id").textContent =
+            "#" + order.orderNumber;
+
+        document.getElementById("time").textContent =
+            order.pickupTime || "-";
+
+        document.getElementById("total").textContent =
+            (order.total || 0) + " ر.س";
+
+        const itemsDiv = document.getElementById("items");
+        itemsDiv.innerHTML = "";
+
+        (order.items || []).forEach(item=>{
+
+            itemsDiv.innerHTML += `
+                <div class="item">
+                    <span>${item.name} × ${item.qty}</span>
+                    <span>${item.price * item.qty} ر.س</span>
+                </div>
+            `;
+
+        });
+
+    }).catch(error=>{
+
+        console.log(error);
+        alert("حدث خطأ أثناء تحميل الطلب");
+
+    });
+
+}else{
+
+    alert("لا يوجد طلب لعرضه");
+
+}
+
+function goHome(){
+
+    localStorage.removeItem("cart");
+    localStorage.removeItem("lastOrderId");
+
+    window.location.href="index.html";
+
+}
+
+function newOrder(){
+
+    localStorage.removeItem("cart");
+    localStorage.removeItem("lastOrderId");
+
+    window.location.href="menu.html";
+
+}
+
+</script>
+
+</body>
+</html>

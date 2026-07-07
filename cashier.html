@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>الكاشير</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+body{
+    margin:0;
+    background:#f5f5f5;
+    font-family:Tahoma;
+}
+
+header{
+    background:#111;
+    color:#fff;
+    padding:20px;
+    text-align:center;
+    font-size:24px;
+    font-weight:bold;
+}
+
+#orders{
+    padding:20px;
+}
+
+.order{
+
+    background:#fff;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+}
+
+.order h2{
+
+    margin:0 0 15px;
+
+}
+
+.item{
+
+    display:flex;
+    justify-content:space-between;
+    margin:8px 0;
+
+}
+
+.total{
+
+    font-size:22px;
+    color:#0a8a4b;
+    font-weight:bold;
+
+    margin-top:15px;
+
+}
+
+.status{
+
+    margin-top:20px;
+
+}
+
+.status button{
+
+    padding:10px 18px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    background:#111;
+
+    color:#fff;
+
+}
+
+.status-btn{
+
+width:30%;
+
+padding:14px;
+
+border:none;
+
+border-radius:12px;
+
+font-size:17px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+color:white;
+
+transition:.3s;
+
+}
+
+.status-btn.new{
+
+background:#22c55e;
+
+}
+
+.status-btn.preparing{
+
+background:#f59e0b;
+
+}
+
+.status-btn.ready{
+
+background:#2563eb;
+
+}
+
+.status-btn.done{
+
+background:#6b7280;
+
+}
+
+.status-btn:hover{
+
+transform:scale(1.02);
+
+}
+
+
+
+.stats{
+
+display:flex;
+
+gap:10px;
+
+padding:15px;
+
+overflow-x:auto;
+
+}
+
+.stats::-webkit-scrollbar{
+
+display:none;
+
+}
+
+.box{
+
+display:flex;
+
+align-items:center;
+
+gap:8px;
+
+padding:10px 16px;
+
+border-radius:30px;
+
+color:white;
+
+font-size:15px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+white-space:nowrap;
+
+transition:.25s;
+
+box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+}
+
+.box:hover{
+
+transform:translateY(-2px);
+
+}
+
+.box span{
+
+font-size:15px;
+
+background:rgba(255,255,255,.25);
+
+padding:4px 9px;
+
+border-radius:20px;
+
+margin:0;
+
+}
+
+
+
+.green{
+
+background:#22c55e;
+
+}
+
+.orange{
+
+background:#f59e0b;
+
+}
+
+.blue{
+
+background:#2563eb;
+
+}
+
+.gray{
+
+background:#6b7280;
+
+}
+
+@media(max-width:700px){
+
+.stats{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+
+</style>
+
+</head>
+<body>
+
+<header>
+  
+طلبات المطعم
+
+</header>
+
+
+
+<div class="stats">
+
+<div class="box" style="background:#111" onclick="setFilter('all')">
+كل الطلبات
+<span id="allCount">0</span>
+</div>
+
+<div class="box green" onclick="setFilter('new')">
+ جديد
+<span id="newCount">0</span>
+</div>
+
+<div class="box orange" onclick="setFilter('preparing')">
+قيد التجهيز
+<span id="preparingCount">0</span>
+</div>
+
+<div class="box blue" onclick="setFilter('ready')">
+  جاهز للاستلام
+<span id="readyCount">0</span>
+</div>
+
+<div class="box gray" onclick="setFilter('done')">
+ تم الاستلام
+<span id="doneCount">0</span>
+</div>
+
+</div>
+
+
+
+<div id="orders"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+
+apiKey:"AIzaSyC29y-WhUcevyAzQU4qmkAtN9D1s_4I4xA",
+
+authDomain:"shibak-9-a3ef3.firebaseapp.com",
+
+projectId:"shibak-9-a3ef3",
+
+appId:"1:617992558496:web:8a6ef748c11611d1ad36c5"
+
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db=firebase.firestore();
+
+let currentFilter = "all";
+
+function setFilter(status){
+
+    currentFilter = status;
+
+    renderOrders();
+
+}
+
+let allOrders = [];
+
+db.collection("orders")
+.orderBy("createdAt","desc")
+.onSnapshot(snapshot=>{
+    allOrders = [];
+
+    const orders=document.getElementById("orders");
+
+    orders.innerHTML="";
+    let newCount = 0;
+let preparingCount = 0;
+let readyCount = 0;
+let doneCount = 0;
+
+    snapshot.forEach(doc=>{
+
+    allOrders.push({
+        id:doc.id,
+        ...doc.data()
+    });
+
+    const order = doc.data();
+
+    if(order.status=="new") newCount++;
+    if(order.status=="preparing") preparingCount++;
+    if(order.status=="ready") readyCount++;
+    if(order.status=="done") doneCount++;
+
+});
+    document.getElementById("newCount").textContent = newCount;
+
+document.getElementById("preparingCount").textContent = preparingCount;
+
+document.getElementById("readyCount").textContent = readyCount;
+
+document.getElementById("doneCount").textContent = doneCount;
+document.getElementById("allCount").textContent =
+newCount + preparingCount + readyCount + doneCount;
+   renderOrders();
+
+});
+
+function renderOrders(){
+
+    const orders = document.getElementById("orders");
+    orders.innerHTML = "";
+
+    allOrders.forEach(order=>{
+
+        if(currentFilter !== "all" && order.status !== currentFilter){
+            return;
+        }
+
+        let items = "";
+
+        order.items.forEach(i=>{
+            items += `
+            <div class="item">
+                <span>${i.name} × ${i.qty}</span>
+                <span>${i.price} ر.س</span>
+            </div>`;
+        });
+
+        orders.innerHTML += `
+        <div class="order">
+
+            <h2>طلب #${order.orderNumber}</h2>
+
+            <p><b>العميل:</b> ${order.customer}</p>
+
+            <p><b>الجوال:</b> ${order.phone}</p>
+
+            <p><b>وقت الاستلام:</b> ${order.pickupTime}</p>
+
+            <p><b>الدفع:</b> ${order.payment}</p>
+
+            <p><b>الملاحظات:</b> ${order.note || "لا يوجد"}</p>
+
+            <hr>
+
+            ${items}
+
+            <div class="total">
+                ${order.total} ر.س
+            </div>
+
+            <div class="status">
+
+                <button
+                class="status-btn ${order.status}"
+                onclick="changeStatus('${order.id}','${order.status}')">
+
+                ${
+                    order.status==="new" ? "طلب جديد" :
+                    order.status==="preparing" ? "جاري التجهيز" :
+                    order.status==="ready" ? "جاهز للاستلام" :
+                    "تم التسليم"
+                }
+
+                </button>
+
+            </div>
+
+        </div>`;
+    });
+  
+
+}
+
+
+
+async function changeStatus(id,status){
+
+    let newStatus="";
+
+    if(status==="new"){
+        newStatus="preparing";
+    }
+
+    else if(status==="preparing"){
+        newStatus="ready";
+    }
+
+    else if(status==="ready"){
+        newStatus="done";
+    }
+
+    else{
+        newStatus="new";
+    }
+
+    await db.collection("orders").doc(id).update({
+
+        status:newStatus
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

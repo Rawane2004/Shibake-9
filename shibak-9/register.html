@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إنشاء حساب</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- الهيدر -->
+<header class="header">
+  <div class="left">
+    <div class="icon-box">
+      <a href="cart.html"><i class="fa-solid fa-basket-shopping"></i></a>
+    </div>
+  </div>
+
+  <div class="center">
+    <img src="img/text-removebg-preview.png">
+  </div>
+
+  <div class="right">
+    <div class="logo">
+  <a href="index.html"><img src="/img/logo-sh-removebg-preview.png" alt="logo"></a>
+    </div>
+  </div>
+</header>
+
+<!-- الصفحة -->
+<div class="login-page">
+  <div class="login-container">
+    <div class="login-card">
+
+      <div class="login-logo">
+        <img src="img/logo-sh-removebg-preview.png">
+      </div>
+
+      <p class="login-sub">إنشاء حساب جديد</p>
+
+      <div class="input-group">
+        <label>الاسم الكامل</label>
+        <input type="text" id="name">
+      </div>
+
+      <div class="input-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" id="email">
+      </div>
+
+      <div class="input-group">
+        <label>رقم الجوال</label>
+        <input type="tel" id="phone" placeholder="05XXXXXXXX">
+      </div>
+
+      <!-- كلمة المرور -->
+      <div class="input-group password-field">
+        <label>كلمة المرور</label>
+        <div class="password-wrapper">
+          <input type="password" id="password">
+          <i class="fa-solid fa-eye toggle-password"></i>
+        </div>
+      </div>
+
+      <!-- تأكيد -->
+      <div class="input-group password-field">
+        <label>تأكيد كلمة المرور</label>
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword">
+          <i class="fa-solid fa-eye toggle-password"></i>
+        </div>
+      </div>
+
+      <button class="login-submit" onclick="registerUser()">
+        إنشاء حساب <i class="fa-solid fa-user-plus"></i>
+      </button>
+
+      <div class="create-account">
+        <span>لدي حساب</span>
+        <a href="login.html">تسجيل الدخول</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- reCAPTCHA -->
+
+<!--Firebase-->`
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC29y-WhUcevyAzQU4qmkAtN9D1s_4I4xA",
+  authDomain: "shibak-9-a3ef3.firebaseapp.com",
+  projectId: "shibak-9-a3ef3",
+  appId: "1:617992558496:web:8a6ef748c11611d1ad36c5"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+
+
+// تسجيل
+async function registerUser(){
+
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+  const confirm = document.getElementById("confirmPassword").value;
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+  if(!name || !email || !password){
+    alert("عبّ كل الحقول");
+    return;
+  }
+
+  if(!emailRegex.test(email)){
+    alert("الإيميل غير صحيح");
+    return;
+  }
+
+  if(!passRegex.test(password)){
+    alert("كلمة المرور لازم 8 خانات + حرف كبير + رقم");
+    return;
+  }
+
+  if(password !== confirm){
+    alert("كلمة المرور غير متطابقة");
+    return;
+  }
+
+  try {
+
+    // إنشاء الحساب
+    const userCredential = await firebase.auth()
+      .createUserWithEmailAndPassword(email, password);
+
+    const user = userCredential.user;
+
+    console.log("Name:", name);
+console.log("Email:", email);
+console.log("Phone:", document.getElementById("phone").value);
+
+    const db = firebase.firestore();
+
+await db.collection("users").doc(user.uid).set({
+  uid: user.uid,
+  name: name,
+  email: email,
+  phone: document.getElementById("phone").value,
+  photo: "",
+  role: "client",
+  createdAt: firebase.firestore.FieldValue.serverTimestamp()
+});
+
+    // تحديث الاسم
+    await user.updateProfile({
+      displayName: name
+    });
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPhoto", "");
+    localStorage.setItem("uid", user.uid);
+
+    // إرسال رابط التحقق
+    await user.sendEmailVerification();
+
+// حتى لا يبقى مسجل دخول قبل التحقق
+await firebase.auth().signOut();
+
+alert("تم إنشاء الحساب بنجاح.\n\nأرسلنا رابط تفعيل إلى بريدك الإلكتروني ");
+
+window.location.href = "login.html";
+
+  } catch(error){
+
+    alert(error.message);
+
+  }
+
+}
+
+ 
+
+// إظهار/إخفاء كلمة المرور
+document.querySelectorAll(".toggle-password").forEach(icon => {
+  icon.addEventListener("click", () => {
+
+    const input = icon.previousElementSibling;
+
+    if(input.type === "password"){
+      input.type = "text";
+      icon.classList.replace("fa-eye","fa-eye-slash");
+    } else {
+      input.type = "password";
+      icon.classList.replace("fa-eye-slash","fa-eye");
+    }
+
+  });
+});
+</script>
+
+</body>
+</html>

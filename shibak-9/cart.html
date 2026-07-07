@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>السلة</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+<body>
+
+
+<header class="header">
+  <div class="left">
+    <div class="icon-box">
+      <a href="menu.html"><i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <div class="center">
+    <img src="img/text-removebg-preview.png" alt="logo">
+  </div>
+
+ <div class="right">
+
+    <div id="user-area">
+
+<a href="login.html" id="login-link">
+
+<button class="login-btn">
+    <i class="fa-regular fa-user"></i>
+</button>
+
+</a>
+
+</div>
+
+    <div class="logo">
+  <a href="index.html"><img src="/img/logo-sh-removebg-preview.png" alt="logo"></a>
+</div>
+
+  </div>
+</header>
+
+<!-- CART EMPTY -->
+<section class="cart-empty">
+
+  <div class="cart-icon">
+    <i class="fa-solid fa-basket-shopping"></i>
+    <span class="badge"></span>
+  </div>
+
+  <h2>سلتك فاضية</h2>
+
+  <p>أضف بعض الأطباق من المنيو لإتمام الطلب</p>
+
+  <a href="menu.html" class="go-menu">
+    تصفح المنيو <i class="fa-solid fa-arrow-left"></i>
+  </a>
+
+</section>
+
+<section class="cart-full checkout-ui">
+
+  <!-- الرجوع -->
+  <div class="back" onclick="window.location.href='menu.html'">
+    <i class="fa-solid fa-arrow-right"></i>
+    <span>الرجوع للمنيو</span>
+  </div>
+
+  <h1 class="title">إتمام الطلب</h1>
+
+  <!-- عنصر -->
+  <div id="cart-items"></div>
+  <!-- بيانات العميل -->
+<div class="section">
+
+  <div class="section-head">
+    <span>بيانات العميل</span>
+    <i class="fa-solid fa-user"></i>
+  </div>
+
+  <input
+    type="text"
+    id="customerName"
+    placeholder="اسم العميل (اختياري)"
+    class="checkout-input"
+  >
+
+  <input
+    type="tel"
+    id="customerPhone"
+    placeholder="رقم الجوال"
+    class="checkout-input"
+  >
+
+  <textarea
+    id="customerNote"
+    placeholder="ملاحظات الطلب (بدون بصل - زيادة جبن...)"
+    class="checkout-input"
+    rows="3"></textarea>
+
+</div>
+
+
+  <!-- وقت الاستلام -->
+  <div class="section">
+    <div class="section-head">
+      <span>وقت الاستلام</span>
+      <i class="fa-regular fa-clock"></i>
+    </div>
+
+    <p class="hint">اختر الوقت المناسب لك (كل 10 دقائق)</p>
+
+    <div class="times">
+      <div class="time">06:30</div>
+      <div class="time">06:20</div>
+      <div class="time">06:10</div>
+      <div class="time">06:00</div>
+      <div class="time active">05:50</div>
+    </div>
+  </div>
+
+
+
+  <!-- الدفع -->
+  <div class="section">
+    <label class="pay-title">طريقة الدفع</label>
+
+    <div class="pay">
+
+      <div class="pay-card active">
+        <i class="fa-regular fa-credit-card"></i>
+        <p class="tr">دفع إلكتروني</p>
+        <small>قريبًا</small>
+      </div>
+
+      <div class="pay-card">
+        <i class="fa-solid fa-wallet"></i>
+        <p class="tr">الدفع عند الاستلام</p>
+        <small>كاش أو شبكة</small>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+
+<!-- البار السفلي -->
+<div class="bottom-bar">
+
+  <div class="total">
+  <span>المجموع</span>
+  <span id="total-price">0 ر.س</span>
+</div>
+  <button onclick="confirmOrder()">
+  تأكيد الطلب
+  <i class="fa-solid fa-arrow-left"></i>
+</button>
+
+</div>
+
+
+<script id="cart-fix">
+
+let cart = JSON.parse(localStorage.getItem("cart")) || {};
+
+function renderCartPage(){
+
+  const empty = document.querySelector(".cart-empty");
+  const full = document.querySelector(".cart-full");
+  const bottomBar = document.querySelector(".bottom-bar");
+
+  let itemsContainer = document.getElementById("cart-items");
+  let totalPrice = 0;
+
+  // إذا فاضي
+  if(Object.keys(cart).length === 0){
+    empty.classList.remove("hidden");
+    full.classList.add("hidden");
+    bottomBar.style.display = "none"; 
+    return;
+  }
+
+  // إذا فيه منتجات
+  empty.classList.add("hidden");
+  full.classList.remove("hidden");
+  bottomBar.style.display = "block";
+
+  itemsContainer.innerHTML = "";
+
+  Object.keys(cart).forEach(name => {
+
+    let item = cart[name];
+    totalPrice += item.price * item.qty;
+
+    itemsContainer.innerHTML += `
+      <div class="item">
+
+        <div class="item-info">
+          <h3>${name}</h3>
+          <span>${item.price} ر.س</span>
+        </div>
+
+        <div class="item-actions">
+
+          <div class="qty">
+            <button onclick="minus('${name}')">-</button>
+            <span>${item.qty}</span>
+            <button onclick="plus('${name}')">+</button>
+          </div>
+
+          <i class="fa-solid fa-trash" onclick="removeItem('${name}')"></i>
+
+        </div>
+
+      </div>
+    `;
+  });
+
+  document.getElementById("total-price").textContent = totalPrice + " ر.س";
+}
+
+/*التحكم  */
+
+function plus(name){
+  cart[name].qty++;
+  save();
+}
+
+function minus(name){
+  cart[name].qty--;
+  if(cart[name].qty <= 0){
+    delete cart[name];
+  }
+  save();
+}
+
+function removeItem(name){
+  delete cart[name];
+  save();
+}
+
+function save(){
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCartPage();
+}
+
+renderCartPage();
+
+
+
+
+
+
+</script>
+
+
+<script>
+async function confirmOrder() {
+
+  const user = firebase.auth().currentUser;
+    console.log(user);
+
+if(!user){
+
+    alert("يرجى تسجيل الدخول");
+
+    return;
+
+}
+
+    if(Object.keys(cart).length === 0){
+        alert("السلة فارغة");
+        return;
+    }
+
+    const time =
+        document.querySelector(".time.active")?.innerText || "";
+
+    const payment =
+        document.querySelector(".pay-card.active .tr")?.innerText || "";
+
+    let items = [];
+    let total = 0;
+
+    Object.keys(cart).forEach(name => {
+
+        items.push({
+            name: name,
+            price: cart[name].price,
+            qty: cart[name].qty
+        });
+
+        total += cart[name].price * cart[name].qty;
+
+    });
+    const customerName =
+document.getElementById("customerName").value.trim();
+
+const customerPhone =
+document.getElementById("customerPhone").value.trim();
+
+const customerNote =
+document.getElementById("customerNote").value.trim();
+
+if(customerPhone==""){
+    alert("يرجى إدخال رقم الجوال");
+    return;
+}
+
+const counterRef = db.collection("settings").doc("counter");
+
+const counterDoc = await counterRef.get();
+
+let orderNumber = 1001;
+
+if(counterDoc.exists){
+
+    orderNumber = counterDoc.data().lastNumber + 1;
+
+}
+
+await counterRef.set({
+
+    lastNumber: orderNumber
+
+});
+
+    try{
+
+        const docRef = await db.collection("orders").add({
+
+    uid: user.uid,
+
+    orderNumber: orderNumber,
+
+    customer: customerName || "عميل",
+
+    phone: customerPhone,
+
+    note: customerNote,
+
+    items: items,
+
+    total: total,
+
+    pickupTime: time,
+
+    payment: payment,
+
+    status: "new",
+
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+
+});
+
+// نحفظ رقم المستند حتى تعرضه صفحة النجاح
+localStorage.setItem("lastOrderId", docRef.id);
+
+// نحذف السلة فقط
+localStorage.removeItem("cart");
+
+// الانتقال لصفحة النجاح
+window.location.href = "success.html";
+
+    }catch(err){
+
+        console.log(err);
+
+        console.log(err);
+
+alert(err.message);
+
+    }
+
+}
+</script>
+
+<script>
+    document.querySelectorAll(".time").forEach(time => {
+  time.addEventListener("click", () => {
+
+    // يشيل التحديد من الكل
+    document.querySelectorAll(".time").forEach(t => {
+      t.classList.remove("active");
+    });
+
+    // يحط التحديد على اللي انضغط
+    time.classList.add("active");
+
+  });
+});
+
+document.querySelectorAll(".pay-card").forEach(card => {
+  card.addEventListener("click", () => {
+
+    // نشيل التحديد من الكل
+    document.querySelectorAll(".pay-card").forEach(c => {
+      c.classList.remove("active");
+    });
+
+    // نحط التحديد على المختار
+    card.classList.add("active");
+
+  });
+});
+</script>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC29y-WhUcevyAzQU4qmkAtN9D1s_4I4xA",
+  authDomain: "shibak-9-a3ef3.firebaseapp.com",
+  projectId: "shibak-9-a3ef3",
+  appId: "1:617992558496:web:8a6ef748c11611d1ad36c5"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+auth.onAuthStateChanged(async (user) => {
+
+const userArea = document.getElementById("user-area");
+
+if(!user){
+
+userArea.innerHTML=`
+<a href="login.html">
+<button class="login-btn">
+<i class="fa-regular fa-user"></i>
+</button>
+</a>
+`;
+
+return;
+
+}
+
+const doc=await db.collection("users").doc(user.uid).get();
+
+if(!doc.exists) return;
+
+const data=doc.data();
+
+const firstLetter=(data.name||"?").charAt(0).toUpperCase();
+
+userArea.innerHTML=`
+<a href="profile.html">
+<div class="user-avatar-letter">
+${firstLetter}
+</div>
+</a>
+`;
+
+});
+
+const db = firebase.firestore();
+
+firebase.auth().onAuthStateChanged(async(user)=>{
+
+    if(!user){
+        return;
+    }
+
+    const doc = await db.collection("users").doc(user.uid).get();
+
+    if(!doc.exists) return;
+
+    const data = doc.data();
+
+    document.getElementById("customerName").value = data.name || "";
+    document.getElementById("customerPhone").value = data.phone || "";
+
+});
+
+</script>
+
+
+</body>
+</html>

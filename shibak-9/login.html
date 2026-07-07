@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- CSS حقك -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+    <header class="header">
+
+  <!-- يسار: أيقونة -->
+  <div class="left">
+    <div class="icon-box">
+      <a href="cart.html"><i class="fa-solid fa-basket-shopping"></i></a>
+    </div>
+  </div>
+
+  <!-- وسط: اسم البراند -->
+  <div class="center">
+    <img src="img/text-removebg-preview.png" alt="text">
+  </div>
+
+  <!-- يمين: كارت + تسجيل -->
+  <div class="right">
+
+    
+
+    <div class="logo">
+  <a href="index.html"><img src="/img/logo-sh-removebg-preview.png" alt="logo"></a>
+</div>
+
+  </div>
+
+</header>
+
+<div class="login-page">
+    
+  <div class="login-container">
+
+    <div class="login-card">
+
+      <!-- الشعار -->
+      <div class="login-logo">
+        <img src="img/logo-sh-removebg-preview.png" alt="logo">
+      </div>
+
+      <p class="login-sub">SHIB AK<span>-9</span></p>
+
+      <!-- الإيميل -->
+      <div class="input-group">
+        <label>البريد الإلكتروني</label>
+        <input type="email" placeholder="shibak9@gmail.com">
+      </div>
+
+      <!-- الباسورد -->
+      <div class="input-group password-field">
+  <label>كلمة المرور</label>
+
+  <div class="password-wrapper">
+    <input type="password" placeholder="••••••••" id="password">
+
+    <i class="fa-solid fa-eye toggle-password"></i>
+  </div>
+</div>
+
+      <!-- نسيت كلمة المرور -->
+      <div class="forgot">
+        <a href="#">نسيت كلمة المرور؟</a>
+      </div>
+
+      <!-- زر الدخول -->
+      <button class="login-submit" onclick="loginUser()">
+  دخول
+</button>
+
+      <!-- إنشاء حساب -->
+      <div class="create-account">
+        <span> ليس لدي حساب </span>
+        <a href="register.html">إنشاء حساب</a>
+      </div>
+
+    </div>
+  </div>
+  </div>
+
+  <footer>
+  <h4><span>rawan</span></h4>
+  <h5>© 2026 كل الحقوق محفوظة</h5>
+</footer>
+
+
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyC29y-WhUcevyAzQU4qmkAtN9D1s_4I4xA",
+  authDomain: "shibak-9-a3ef3.firebaseapp.com",
+  projectId: "shibak-9-a3ef3",
+  appId: "1:617992558496:web:8a6ef748c11611d1ad36c5"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+// تسجيل الدخول
+async function loginUser(){
+
+  const email = document.querySelectorAll("input")[0].value.trim();
+  const password = document.querySelectorAll("input")[1].value;
+
+  if(!email || !password){
+    alert("عبّ البيانات");
+    return;
+  }
+
+  try {
+
+    const userCredential = await firebase.auth()
+      .signInWithEmailAndPassword(email, password);
+
+    const user = userCredential.user;
+
+    // تحديث بيانات المستخدم من Firebase
+await user.reload();
+
+if (!user.emailVerified) {
+
+    await firebase.auth().signOut();
+
+    alert("يجب تأكيد البريد الإلكتروني أولاً.\n\nتحقق من صندوق الوارد ثم سجّل الدخول مرة أخرى.");
+
+    return;
+
+}
+
+  
+
+    const db = firebase.firestore();
+
+    const doc = await db
+      .collection("users")
+      .doc(user.uid)
+      .get();
+
+    if(!doc.exists){
+
+      alert("بيانات المستخدم غير موجودة");
+
+      return;
+    }
+
+    const userData = doc.data();
+
+    // حفظ بيانات المستخدم محليًا
+      localStorage.setItem("uid", user.uid);
+      localStorage.setItem("userName", userData.name);
+      localStorage.setItem("userEmail", userData.email);
+      localStorage.setItem("userPhone", userData.phone || "");
+      localStorage.setItem("userPhoto", userData.photo || "");
+      localStorage.setItem("userRole", userData.role);
+
+// التوجيه
+if(userData.role === "admin"){
+
+    window.location.href = "admin.html";
+
+}else{
+
+    window.location.href = "index.html";
+
+}
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(error.message);
+
+  }
+
+}
+
+// العين
+document.querySelectorAll(".toggle-password").forEach(icon => {
+
+  icon.addEventListener("click", () => {
+
+    const input = icon.previousElementSibling;
+
+    if(input.type === "password"){
+
+      input.type = "text";
+      icon.classList.replace("fa-eye","fa-eye-slash");
+
+    } else {
+
+      input.type = "password";
+      icon.classList.replace("fa-eye-slash","fa-eye");
+
+    }
+
+  });
+
+});
+</script>
+
+
+
+</body>
+</html>

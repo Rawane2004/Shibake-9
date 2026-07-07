@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>حسابي</title>
+
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #f6f2ee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.back{
+
+width:45px;
+height:45px;
+
+border-radius:12px;
+
+background:#111;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+color:white;
+font-size:18px;
+
+text-decoration:none;
+
+}
+
+.logo img{
+height:45px;
+}
+
+.profile{
+
+padding:30px 20px;
+text-align:center;
+
+}
+
+.avatar{
+
+width:110px;
+height:110px;
+
+border-radius:50%;
+
+background:#ff7a00;
+text-decoration: none;
+
+margin:auto;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:55px;
+
+color:white;
+
+}
+
+.name{
+
+margin-top:15px;
+
+font-size:26px;
+font-weight:bold;
+
+}
+
+.phone{
+
+margin-top:5px;
+
+color:#777;
+
+font-size:15px;
+
+}
+
+.stats{
+
+display:grid;
+
+grid-template-columns:repeat(3,1fr);
+
+gap:12px;
+
+padding:20px;
+
+}
+
+.card{
+
+background:white;
+
+border-radius:18px;
+
+padding:18px;
+
+text-align:center;
+
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+
+}
+
+.card h2{
+
+color:#ff7a00;
+
+margin-bottom:8px;
+
+}
+
+.menu{
+
+padding:15px;
+
+}
+
+.item{
+
+background:white;
+
+margin-bottom:12px;
+
+border-radius:16px;
+
+padding:18px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+cursor:pointer;
+
+box-shadow:0 2px 10px rgba(0,0,0,.08);
+
+transition:.2s;
+
+}
+
+.item:hover{
+
+transform:translateY(-2px);
+
+}
+
+.item-left{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.icon{
+
+width:45px;
+height:45px;
+
+border-radius:12px;
+
+background:#fff4eb;
+
+color:#ff7a00;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-size:18px;
+
+}
+
+.logout{
+
+background:#e53935;
+color:white;
+
+justify-content:center;
+
+}
+
+.logout .icon{
+
+background:white;
+
+color:#e53935;
+
+}
+
+.profile-card{
+    background:#fff;
+    margin:15px;
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.card-title i{
+    color:#ff7a00;
+}
+
+.order-box{
+    border:1px solid #eee;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:12px;
+}
+
+.order-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.order-middle{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+}
+
+.order-box small{
+    color:#242323;
+}
+
+.status{
+    padding:5px 12px;
+    border-radius:30px;
+    color:#fff;
+    font-size:13px;
+}
+
+.status.preparing{
+    background:#ff9800;
+}
+
+.status.ready{
+    background:#2ecc71;
+}
+
+.status.done{
+    background:#3498db;
+}
+
+.offer-box{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.offer-icon{
+    width:65px;
+    height:65px;
+    background:#fff4ea;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    color:#ff7a00;
+}
+
+.offer-text h3{
+    margin:0;
+    font-size:17px;
+}
+
+.offer-text p{
+    margin-top:5px;
+    color:#777;
+    font-size:14px;
+}
+
+.setting-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 18px;
+    margin-bottom:10px;
+    border:none;
+    border-radius:14px;
+    background:#f7f7f7;
+    cursor:pointer;
+    font-size:15px;
+    transition:.25s;
+}
+
+.setting-btn:hover{
+    background:#eeeeee;
+}
+
+.setting-btn i{
+    width:22px;
+    color:#ff7a00;
+    
+}
+
+.logout{
+    background:#ffeded;
+    color:#d63031;
+}
+
+.logout i{
+    color:#d63031;
+}
+
+#editProfile{
+
+margin:10px 0 18px 0;
+
+animation:showEdit .25s ease;
+
+}
+
+.checkout-input{
+
+width:100%;
+padding:14px;
+margin-bottom:12px;
+
+border:1px solid #ddd;
+border-radius:12px;
+
+font-size:15px;
+outline:none;
+
+}
+
+.checkout-input:focus{
+
+border-color:#ff7a00;
+
+}
+
+@keyframes showEdit{
+
+from{
+opacity:0;
+transform:translateY(-10px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+.avatar-container{
+
+position:relative;
+
+width:120px;
+
+margin:auto;
+
+}
+
+.avatar-img{
+
+width:120px;
+height:120px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+background:#ff7a00;
+
+border:5px solid white;
+
+box-shadow:0 5px 20px rgba(0,0,0,.15);
+
+}
+
+
+
+.empty-orders{
+text-align:center;
+padding:30px;
+color:#777;
+}
+
+.empty-orders i{
+font-size:55px;
+color:#ff7a00;
+margin-bottom:15px;
+}
+
+.order-box{
+background:#fff;
+border-radius:15px;
+padding:15px;
+margin-bottom:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.order-header{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+font-weight:bold;
+}
+
+.order-item{
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+border-bottom:1px solid #eee;
+}
+
+.order-footer{
+margin-top:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.status{
+padding:5px 12px;
+border-radius:20px;
+color:#fff;
+font-size:13px;
+}
+
+.preparing{
+background:#ff9800;
+}
+
+.ready{
+background:#2ecc71;
+}
+
+.done{
+background:#3498db;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="header">
+  <div class="left">
+    <div class="icon-box">
+      <a href="index.html"><i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <div class="center">
+    <img src="img/text-removebg-preview.png" alt="logo">
+  </div>
+
+ <div class="right">
+
+
+    <div class="logo">
+  <a href="index.html"><img src="/img/logo-sh-removebg-preview.png" alt="logo"></a>
+</div>
+
+  </div>
+</header>
+
+<section class="profile">
+
+<div class="avatar-container">
+
+<img id="profileImage"
+src="img/default-user.png"
+class="avatar-img">
+
+
+
+<input
+type="file"
+id="imageInput"
+accept="image/*"
+hidden>
+
+</div>
+
+<h2 class="name" id="name">
+...
+</h2>
+
+<p class="phone" id="email">
+...
+</p>
+
+</section>
+
+<section class="stats">
+
+<div class="card">
+
+<h2 id="ordersCount">0</h2>
+
+<p>طلب</p>
+
+</div>
+
+<div class="card">
+
+<h2 id="spent">0</h2>
+
+<p>ر.س</p>
+
+</div>
+
+<div class="card">
+
+<h2 id="discount">0%</h2>
+
+<p>خصم</p>
+
+</div>
+
+</section>
+
+<section class="menu">
+
+<div class="item" onclick="toggleEdit()">
+
+    <div class="item-left">
+
+        <div class="icon">
+            <i class="fa-solid fa-user-pen"></i>
+        </div>
+
+        <span>تعديل البيانات</span>
+
+    </div>
+
+    <i class="fa-solid fa-chevron-left"></i>
+
+</div>
+
+<div id="editProfile"
+style="display:none;"
+class="profile-card">
+
+<div class="card-title">
+
+<i class="fa-solid fa-user-pen"></i>
+
+<span>
+
+تعديل البيانات
+
+</span>
+
+</div>
+
+<input
+type="text"
+id="editName"
+class="checkout-input"
+placeholder="الاسم">
+
+<input
+type="text"
+id="editPhone"
+class="checkout-input"
+placeholder="رقم الجوال">
+
+<input
+type="email"
+id="editEmail"
+class="checkout-input"
+readonly>
+
+<button
+class="setting-btn"
+onclick="saveProfile()">
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+حفظ البيانات
+
+</button>
+
+</div>
+
+
+
+<div class="item" onclick="showOffers()">
+
+<div class="item-left">
+
+<div class="icon">
+
+<i class="fa-solid fa-gift"></i>
+
+</div>
+
+<span>العروض والخصومات</span>
+
+</div>
+
+<i class="fa-solid fa-chevron-left"></i>
+
+</div>
+
+
+
+
+
+</div>
+
+</section>
+
+<!-- ===== طلباتي ===== -->
+<div class="profile-card">
+
+    <div class="card-title">
+        <i class="fa-solid fa-receipt"></i>
+        <span>طلباتي</span>
+    </div>
+
+    <div id="orders-list">
+
+<div class="empty-orders">
+
+<i class="fa-solid fa-box-open"></i>
+
+<h3>لا توجد طلبات</h3>
+
+<p>سيظهر سجل طلباتك هنا.</p>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ===== العروض ===== -->
+<div class="profile-card">
+
+    <div class="card-title">
+        <i class="fa-solid fa-percent"></i>
+        <span>العروض والخصومات</span>
+    </div>
+
+    <div class="offer-box">
+
+        <div class="offer-icon">
+            <i class="fa-solid fa-gift"></i>
+        </div>
+
+        <div class="offer-text">
+            <h3>لا توجد عروض حالياً</h3>
+            <p>تابعنا باستمرار لمعرفة أحدث الخصومات.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ===== الإعدادات ===== -->
+<div class="profile-card">
+
+    <div class="card-title">
+        <i class="fa-solid fa-gear"></i>
+        <span>الإعدادات</span>
+    </div>
+
+    <button class="setting-btn" onclick="changePassword()">
+    <i class="fa-solid fa-lock"></i>
+    تغيير كلمة المرور
+</button>
+
+    <button class="setting-btn" onclick="toggleNotifications()">
+    <i class="fa-solid fa-bell"></i>
+    الإشعارات
+</button>
+
+    <button class="setting-btn logout" onclick="logout()">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        تسجيل الخروج
+    </button>
+
+</div>
+
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+
+
+<script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyC29y-WhUcevyAzQU4qmkAtN9D1s_4I4xA",
+  authDomain: "shibak-9-a3ef3.firebaseapp.com",
+  projectId: "shibak-9-a3ef3",
+  appId: "1:617992558496:web:8a6ef748c11611d1ad36c5"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
+
+let currentUser = null;
+
+auth.onAuthStateChanged(async (user) => {
+
+    if (!user) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    try {
+
+        const userDoc = await db.collection("users").doc(user.uid).get();
+
+        if (userDoc.exists) {
+
+            const data = userDoc.data();
+
+            document.getElementById("name").innerText = data.name || "";
+
+            document.getElementById("email").innerText = data.email || "";
+
+            document.getElementById("editName").value = data.name || "";
+
+            document.getElementById("editPhone").value = data.phone || "";
+
+            document.getElementById("editEmail").value = data.email || "";
+
+            if (data.photoURL) {
+                document.getElementById("profileImage").src = data.photoURL;
+            }
+
+        }
+
+        loadOrders();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("حدث خطأ أثناء تحميل البيانات");
+
+    }
+
+});
+
+async function loadOrders() {
+
+    const ordersList = document.getElementById("orders-list");
+
+    ordersList.innerHTML = "";
+
+    try {
+
+        const ordersSnapshot = await db.collection("orders")
+            .where("uid", "==", currentUser.uid)
+            .orderBy("createdAt", "desc")
+            .get();
+
+        if (ordersSnapshot.empty) {
+
+            ordersList.innerHTML = `
+                <div class="empty-orders">
+                    <i class="fa-solid fa-box-open"></i>
+                    <h3>لا توجد طلبات</h3>
+                    <p>سيظهر سجل طلباتك هنا.</p>
+                </div>
+            `;
+
+            document.getElementById("ordersCount").innerText = "0";
+            document.getElementById("spent").innerText = "0 ر.س";
+            document.getElementById("discount").innerText = "0%";
+
+            return;
+        }
+
+        let spent = 0;
+
+        document.getElementById("ordersCount").innerText = ordersSnapshot.size;
+
+        ordersSnapshot.forEach((doc) => {
+
+            const order = doc.data();
+
+            spent += Number(order.total || 0);
+
+            let status = "قيد التحضير";
+            let cls = "preparing";
+
+            if (order.status === "ready") {
+                status = "جاهز";
+                cls = "ready";
+            }
+
+            if (order.status === "done") {
+                status = "مكتمل";
+                cls = "done";
+            }
+
+            let itemsHTML = "";
+
+            if (order.items && order.items.length) {
+
+                order.items.forEach((item) => {
+
+                    itemsHTML += `
+                        <div class="order-item">
+                            <span>${item.name}</span>
+                            <span>x${item.qty}</span>
+                        </div>
+                    `;
+
+                });
+
+            }
+
+            ordersList.innerHTML += `
+                <div class="order-box">
+
+                    <div class="order-header">
+                        <span>#${order.orderNumber || "----"}</span>
+                        <span class="status ${cls}">${status}</span>
+                    </div>
+
+                    ${itemsHTML}
+
+                    <div class="order-footer">
+                        <strong>${order.total || 0} ر.س</strong>
+                        <small>${order.pickupTime || ""}</small>
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+        document.getElementById("spent").innerText = spent + " ر.س";
+
+        let discount = "0%";
+
+        if (spent >= 300) discount = "5%";
+        if (spent >= 700) discount = "10%";
+        if (spent >= 1200) discount = "15%";
+
+        document.getElementById("discount").innerText = discount;
+
+    } catch (err) {
+
+        console.error(err);
+
+        ordersList.innerHTML = `
+            <div class="empty-orders">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <h3>تعذر تحميل الطلبات</h3>
+            </div>
+        `;
+
+    }
+
+}
+
+
+
+// =======================
+// فتح وإغلاق تعديل البيانات
+// =======================
+function toggleEdit() {
+
+    const box = document.getElementById("editProfile");
+
+    if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
+    }
+
+}
+
+// =======================
+// حفظ البيانات
+// =======================
+async function saveProfile() {
+
+    const user = firebase.auth().currentUser;
+
+    const name = document.getElementById("editName").value.trim();
+
+    const phone = document.getElementById("editPhone").value.trim();
+
+    if (name === "") {
+        alert("اكتب الاسم");
+        return;
+    }
+
+    try {
+
+        await db.collection("users").doc(user.uid).update({
+
+            name: name,
+            phone: phone
+
+        });
+
+        await user.updateProfile({
+
+            displayName: name
+
+        });
+
+        document.getElementById("name").innerText = name;
+
+        alert("تم حفظ البيانات بنجاح ✅");
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("حدث خطأ أثناء الحفظ");
+
+    }
+
+}
+
+// =======================
+// تغيير الصورة
+// =======================
+document.getElementById("imageInput").addEventListener("change", async (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const user = firebase.auth().currentUser;
+
+    try {
+
+        const ref = storage.ref("profiles/" + user.uid);
+
+        await ref.put(file);
+
+        const url = await ref.getDownloadURL();
+
+        await db.collection("users").doc(user.uid).update({
+
+            photoURL: url
+
+        });
+
+        document.getElementById("profileImage").src = url;
+
+        alert("تم تحديث الصورة بنجاح ✅");
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("فشل رفع الصورة");
+
+    }
+
+});
+
+// =======================
+// تغيير كلمة المرور
+// =======================
+async function changePassword() {
+
+    const user = firebase.auth().currentUser;
+
+    try {
+
+        await firebase.auth().sendPasswordResetEmail(user.email);
+
+        alert("تم إرسال رابط تغيير كلمة المرور إلى بريدك الإلكتروني");
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert(err.message);
+
+    }
+
+}
+
+// =======================
+// الإشعارات
+// =======================
+function toggleNotifications() {
+
+    let status = localStorage.getItem("notifications");
+
+    if (status === "on") {
+
+        localStorage.setItem("notifications", "off");
+
+        alert("تم إيقاف الإشعارات");
+
+    } else {
+
+        localStorage.setItem("notifications", "on");
+
+        alert("تم تشغيل الإشعارات");
+
+    }
+
+}
+
+// =======================
+// العروض
+// =======================
+function showOffers() {
+
+    alert("لا توجد عروض حالياً 🎁");
+
+}
+
+// =======================
+// تسجيل الخروج
+// =======================
+async function logout() {
+
+    if (!confirm("هل تريد تسجيل الخروج؟")) return;
+
+    await firebase.auth().signOut();
+
+    window.location.href = "login.html";
+
+}
+
+</script>
+</body>
+</html>

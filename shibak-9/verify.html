@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>تحقق</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="login-page">
+
+<div class="login-card">
+
+  <h2>رمز التحقق</h2>
+  <p>اكتب الكود المرسل</p>
+
+  <div class="otp-box">
+    <input maxlength="1">
+    <input maxlength="1">
+    <input maxlength="1">
+    <input maxlength="1">
+  </div>
+
+  <button class="login-submit" onclick="verifyCode()">تحقق</button>
+
+</div>
+<input type="text" id="otp" placeholder="ادخل الرمز">
+
+<button onclick="verifyCode()">تأكيد</button>
+
+<script>
+function verifyCode(){
+
+  const inputs = document.querySelectorAll(".otp-box input");
+  let code = "";
+
+  inputs.forEach(i => code += i.value);
+
+  const savedOtp = localStorage.getItem("otp");
+
+  if(code == savedOtp){
+
+    const user = JSON.parse(localStorage.getItem("tempUser"));
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
+    if(user.role === "admin"){
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "index.html";
+    }
+
+  } else {
+    alert("رمز خطأ");
+  }
+}
+
+function verifyCode(){
+
+  const code = document.getElementById("otp").value;
+
+  confirmationResult.confirm(code)
+    .then((result) => {
+
+      alert("تم التحقق بنجاح 🔥");
+
+      // هنا تحدد وين يروح المستخدم
+      window.location.href = "menu.html";
+
+    }).catch(() => {
+      alert("رمز غلط");
+    });
+}
+</script>
+
+</body>
+</html>

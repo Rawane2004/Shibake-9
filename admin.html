@@ -178,6 +178,13 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 </script>
+  <script>
+const role = localStorage.getItem("userRole");
+if (role !=="admin") {
+ window.localStorage.href ="index.html";
+}
+
+</script>
 <script src="admin.js"></script>
 </body>
 </html>

@@ -804,122 +804,105 @@ auth.onAuthStateChanged(async (user) => {
 
 });
 
-async function loadOrders() {
+function loadOrders(){
 
-    const ordersList = document.getElementById("orders-list");
+db.collection("orders")
+.where("uid","==",currentUser.uid)
+.orderBy("createdAt","desc")
+.onSnapshot((ordersSnapshot)=>{
 
-    ordersList.innerHTML = "";
+const ordersList=document.getElementById("orders-list");
 
-    try {
+ordersList.innerHTML="";
 
-        const ordersSnapshot = await db.collection("orders")
-            .where("uid", "==", currentUser.uid)
-            .orderBy("createdAt", "desc")
-            .get();
+if(ordersSnapshot.empty){
 
-        if (ordersSnapshot.empty) {
+ordersList.innerHTML=`
+<div class="empty-orders">
+<i class="fa-solid fa-box-open"></i>
+<h3>لا توجد طلبات</h3>
+<p>سيظهر سجل طلباتك هنا.</p>
+</div>`;
 
-            ordersList.innerHTML = `
-                <div class="empty-orders">
-                    <i class="fa-solid fa-box-open"></i>
-                    <h3>لا توجد طلبات</h3>
-                    <p>سيظهر سجل طلباتك هنا.</p>
-                </div>
-            `;
+document.getElementById("ordersCount").innerText="0";
+document.getElementById("spent").innerText="0 ر.س";
+document.getElementById("discount").innerText="0%";
 
-            document.getElementById("ordersCount").innerText = "0";
-            document.getElementById("spent").innerText = "0 ر.س";
-            document.getElementById("discount").innerText = "0%";
-
-            return;
-        }
-
-        let spent = 0;
-
-        document.getElementById("ordersCount").innerText = ordersSnapshot.size;
-
-        ordersSnapshot.forEach((doc) => {
-
-            const order = doc.data();
-
-            spent += Number(order.total || 0);
-
-            let status = "قيد التحضير";
-            let cls = "preparing";
-
-            if (order.status === "ready") {
-                status = "جاهز";
-                cls = "ready";
-            }
-
-            if (order.status === "done") {
-                status = "مكتمل";
-                cls = "done";
-            }
-
-            let itemsHTML = "";
-
-            if (order.items && order.items.length) {
-
-                order.items.forEach((item) => {
-
-                    itemsHTML += `
-                        <div class="order-item">
-                            <span>${item.name}</span>
-                            <span>x${item.qty}</span>
-                        </div>
-                    `;
-
-                });
-
-            }
-
-            ordersList.innerHTML += `
-                <div class="order-box">
-
-                    <div class="order-header">
-                        <span>#${order.orderNumber || "----"}</span>
-                        <span class="status ${cls}">${status}</span>
-                    </div>
-
-                    ${itemsHTML}
-
-                    <div class="order-footer">
-                        <strong>${order.total || 0} ر.س</strong>
-                        <small>${order.pickupTime || ""}</small>
-                    </div>
-
-                </div>
-            `;
-
-        });
-
-        document.getElementById("spent").innerText = spent + " ر.س";
-
-        let discount = "0%";
-
-        if (spent >= 300) discount = "5%";
-        if (spent >= 700) discount = "10%";
-        if (spent >= 1200) discount = "15%";
-
-        document.getElementById("discount").innerText = discount;
-
-    } catch (err) {
-
-        console.error(err);
-
-        ordersList.innerHTML = `
-            <div class="empty-orders">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <h3>تعذر تحميل الطلبات</h3>
-            </div>
-        `;
-
-    }
-
+return;
 }
 
+let spent=0;
 
+document.getElementById("ordersCount").innerText=ordersSnapshot.size;
+
+ordersSnapshot.forEach(doc=>{
+
+const order=doc.data();
+
+spent+=Number(order.total||0);
+
+let status="طلب جديد";
+let cls="new";
+
+if(order.status==="preparing"){
+status="قيد التحضير";
+cls="preparing";
+}
+
+if(order.status==="ready"){
+status="جاهز للاستلام";
+cls="ready";
+}
+
+if(order.status==="done"){
+status="تم الاستلام";
+cls="done";
+}
+
+let itemsHTML="";
+
+(order.items||[]).forEach(item=>{
+
+itemsHTML+=`
+<div class="order-item">
+<span>${item.name}</span>
+<span>x${item.qty}</span>
+</div>`;
+
+});
+
+ordersList.innerHTML+=`
+<div class="order-box">
+
+<div class="order-header">
+<span>#${order.orderNumber}</span>
+<span class="status ${cls}">${status}</span>
+</div>
+
+${itemsHTML}
+
+<div class="order-footer">
+<strong>${order.total} ر.س</strong>
+<small>${order.pickupTime}</small>
+</div>
+
+</div>`;
+
+});
+
+document.getElementById("spent").innerText=spent+" ر.س";
+
+let discount="0%";
+
+if(spent>=300) discount="5%";
+if(spent>=700) discount="10%";
+if(spent>=1200) discount="15%";
+
+document.getElementById("discount").innerText=discount;
+
+});
+
+}
 
 // =======================
 // فتح وإغلاق تعديل البيانات

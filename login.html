@@ -134,15 +134,7 @@ async function loginUser(){
     // تحديث بيانات المستخدم من Firebase
 await user.reload();
 
-if (!user.emailVerified) {
 
-    await firebase.auth().signOut();
-
-    alert("يجب تأكيد البريد الإلكتروني أولاً.\n\nتحقق من صندوق الوارد ثم سجّل الدخول مرة أخرى.");
-
-    return;
-
-}
 
   
 

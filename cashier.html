@@ -312,6 +312,11 @@ firebase.initializeApp(firebaseConfig);
 
 const db=firebase.firestore();
 
+    const role = localStorage.getItem("userrole");
+    if (role  !== "cashier") {
+        window.location.href="index.html"
+    }
+
 let currentFilter = "all";
 
 function setFilter(status){

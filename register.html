@@ -131,7 +131,7 @@ async function registerUser(){
   }
 
   if(!passRegex.test(password)){
-    alert("كلمة المرور لازم 8 خانات + حرف كبير + رقم");
+    alert("كلمة المرور يجب ان تكون 8 خانات + حرف كبير + رقم");
     return;
   }
 
@@ -179,7 +179,7 @@ await db.collection("users").doc(user.uid).set({
 // حتى لا يبقى مسجل دخول قبل التحقق
 await firebase.auth().signOut();
 
-alert("تم إنشاء الحساب بنجاح.\n\تم ارسال رابط التفعيل إلى بريدك الإلكتروني ");
+alert("تم إنشاء الحساب بنجاح.");
 
 window.location.href = "login.html";
 

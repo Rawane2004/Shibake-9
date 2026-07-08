@@ -175,10 +175,14 @@ if(userData.role === "admin"){
 
     window.location.href = "admin.html";
 
-}else{
+}
+else if (userData.role  ==="cashier"){
 
-    window.location.href = "index.html";
+    window.location.href = "cashier.html";
 
+}
+else {
+     window.location.href = "index.html";
 }
 
   }catch(error){
@@ -191,7 +195,6 @@ if(userData.role === "admin"){
 
 }
 
-// العين
 document.querySelectorAll(".toggle-password").forEach(icon => {
 
   icon.addEventListener("click", () => {

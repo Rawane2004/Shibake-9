@@ -179,7 +179,7 @@ await db.collection("users").doc(user.uid).set({
 // حتى لا يبقى مسجل دخول قبل التحقق
 await firebase.auth().signOut();
 
-alert("تم إنشاء الحساب بنجاح.\n\nأرسلنا رابط تفعيل إلى بريدك الإلكتروني ");
+alert("تم إنشاء الحساب بنجاح.\n\تم ارسال رابط التفعيل إلى بريدك الإلكتروني ");
 
 window.location.href = "login.html";
 

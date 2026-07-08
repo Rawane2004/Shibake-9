@@ -313,7 +313,6 @@ firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
 
     const role = localStorage.getItem("userRole");
-    alert("Role = " + role);
     if (role  !== "cashier") {
         window.location.href="index.html"
     }

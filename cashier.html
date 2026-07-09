@@ -335,6 +335,10 @@ firebase.auth().onAuthStateChanged(async (user)=>{
 
         const data = doc.data();
 
+       console.log("User:", user.uid);
+       console.log("Role:", data.role);
+       console.log(data);
+
         if(data.role !== "cashier"){ 
             alert("ليس مصرح لك بالوصول هنا");
             location.replace("index.html");
@@ -343,7 +347,6 @@ firebase.auth().onAuthStateChanged(async (user)=>{
 
         document.body.style.display="block";
 
-        init();
 
     }catch(e){
 

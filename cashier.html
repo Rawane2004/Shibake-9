@@ -12,7 +12,7 @@
 <style>
 
 body{
-    display:none;
+   
     margin:0;
     background:#f5f5f5;
     font-family:Tahoma;
@@ -335,7 +335,7 @@ firebase.auth().onAuthStateChanged(async (user)=>{
 
         const data = doc.data();
 
-        if(data.role !== "cashier"){
+        if(data.role !== "cashier"){ 
             alert("ليس مصرح لك بالوصول هنا");
             location.replace("index.html");
             return;

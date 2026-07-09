@@ -169,6 +169,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+  
 const firebaseConfig = {
   apiKey: "AIzaSyC29y-WhUcevyAzQU4qmkAtN9D1s_4I4xA",
   authDomain: "shibak-9-a3ef3.firebaseapp.com",
@@ -177,12 +178,49 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-</script>
-  <script>
-const role = localStorage.getItem("userRole");
-if (role !=="admin") {
- window.localStorage.href ="index.html";
-}
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+auth.onAuthStateChanged(async (user) => {
+
+    // غير مسجل دخول
+    if (!user) {
+        alert("ليس مصرح لك بالوصول هنا");
+        window.location.href = "login.html";
+        return;
+    }
+
+    try {
+
+        const doc = await db.collection("users").doc(user.uid).get();
+
+        if (!doc.exists) {
+            alert("ليس مصرح لك بالوصول هنا");
+            window.location.href = "index.html";
+            return;
+        }
+
+        const data = doc.data();
+
+        // ليس أدمن
+        if (data.role !== "admin") {
+            alert("ليس مصرح لك بالوصول هنا");
+            window.location.href = "index.html";
+            return;
+        }
+
+        // إذا وصل هنا فهو أدمن
+        document.body.style.display = "block";
+
+    } catch (e) {
+
+        alert("ليس مصرح لك بالوصول هنا");
+        window.location.href = "index.html";
+
+    }
+
+});
 
 </script>
 <script src="admin.js"></script>
